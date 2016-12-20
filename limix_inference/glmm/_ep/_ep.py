@@ -564,6 +564,9 @@ class EP(object):
         ddelta += trace2(AQ, SQt)
         ddelta -= As
         ddelta *= v
+        if delta == 1:
+            import pdb; pdb.set_trace()
+            pass
         ddelta -= uKu / (1 - delta)
         ddelta /= 2
 
@@ -589,6 +592,7 @@ class EP(object):
 
         i = 0
         while i < MAX_EP_ITER:
+            print("AQUI: %d" % i)
             pttau[:] = ttau
             pteta[:] = teta
 
@@ -720,9 +724,12 @@ class EP(object):
 
             if nstep > step:
                 alpha /= 10
+                print(alpha)
             step = nstep
 
             i += 1
+
+        print("Beta: %.15f" % self._tbeta[0])
 
     def _start_optimizer(self):
         x0 = [self.v]
@@ -845,7 +852,9 @@ class FunCostOverdispersion(object):
     def __call__(self, x):
         self._ep.v = x[0]
         self._ep.delta = x[1]
+        print("v: %.15f delta: %.15f" % (x[0], x[1]))
         self._ep._optimize_beta()
+        print("")
         # self._pbar.update(self.nfev)
         self._pbar.update()
         self.nfev += 1
